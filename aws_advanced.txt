@@ -1,0 +1,5 @@
+AWS CloudFront: Content delivery network service. Delivers content globally with low latency using edge locations worldwide.
+AWS EKS: Elastic Kubernetes Service. Managed Kubernetes service to run containerized applications without managing control plane.
+AWS Step Functions: Serverless workflow service. Orchestrates multiple AWS services into serverless workflows and state machines.
+AWS Kinesis: Real-time data streaming service. Collect, process and analyze streaming data at any scale.
+AWS Glue: Serverless ETL service. Discover, prepare and integrate data for analytics and machine learning.

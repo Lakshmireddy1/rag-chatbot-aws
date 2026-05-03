@@ -1,0 +1,10 @@
+AWS EC2: Virtual servers in the cloud. Used to run applications on scalable compute capacity.
+AWS S3: Object storage service. Used to store and retrieve any amount of data like files, images, backups.
+AWS Lambda: Serverless compute service. Run code without managing servers, triggered by events.
+AWS API Gateway: Fully managed service to create and publish REST APIs at any scale.
+AWS Bedrock: Fully managed service to access foundation models like Claude and Titan via API.
+AWS IAM: Identity and Access Management. Controls who can access which AWS services and resources.
+AWS VPC: Virtual Private Cloud. Isolated network section within AWS for your resources.
+AWS RDS: Managed relational database service supporting MySQL, PostgreSQL, and more.
+AWS CloudWatch: Monitoring service for AWS resources, logs, metrics and alerts.
+AWS SageMaker: Fully managed ML service to build, train and deploy machine learning models.

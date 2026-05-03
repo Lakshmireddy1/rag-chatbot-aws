@@ -1,0 +1,40 @@
+{
+    "FunctionName": "rag-chatbot",
+    "FunctionArn": "arn:aws:lambda:eu-north-1:231629457691:function:rag-chatbot",
+    "Runtime": "python3.13",
+    "Role": "arn:aws:iam::231629457691:role/rag-chatbot-role",
+    "Handler": "lambda_handler.lambda_handler",
+    "CodeSize": 1926,
+    "Description": "",
+    "Timeout": 60,
+    "MemorySize": 512,
+    "LastModified": "2026-05-03T12:43:10.000+0000",
+    "CodeSha256": "jalIJV0xgU6R/nYwVMbcj6HabEXH2E77SxdPeLCYTy0=",
+    "Version": "$LATEST",
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "51296a88-3277-43f4-bff4-50c854f8b77a",
+    "State": "Active",
+    "LastUpdateStatus": "InProgress",
+    "LastUpdateStatusReason": "The function is being created.",
+    "LastUpdateStatusReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:eu-north-1::runtime:c51a1796965c4cd7cb4442b973dd7819a70e317fdcb47e87a778352dbbd09749"
+    },
+    "LoggingConfig": {
+        "LogFormat": "Text",
+        "LogGroup": "/aws/lambda/rag-chatbot"
+    }
+}

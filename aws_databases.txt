@@ -1,0 +1,5 @@
+AWS DynamoDB: Fully managed NoSQL database service. Provides single digit millisecond performance at any scale with automatic scaling.
+AWS ElastiCache: Fully managed in-memory caching service. Supports Redis and Memcached for microsecond response times.
+AWS Aurora: MySQL and PostgreSQL compatible relational database. Up to 5x faster than standard MySQL and 3x faster than PostgreSQL.
+AWS Redshift: Fully managed cloud data warehouse. Analyze petabytes of data using standard SQL and existing BI tools.
+AWS DocumentDB: Fully managed MongoDB compatible document database. Designed for JSON data with automatic scaling.
