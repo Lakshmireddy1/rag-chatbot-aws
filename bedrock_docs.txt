@@ -1,0 +1,117 @@
+Overview - Amazon Bedrock
+View a markdown version of this page
+Overview - Amazon Bedrock
+Documentation
+Amazon Bedrock
+User Guide
+Quickstart
+Supported models
+What's new?
+Start Building
+Overview
+Amazon Bedrock is a fully managed service that provides secure, enterprise-grade access to
+high-performing foundation models
+from leading AI companies, enabling you to build and scale generative AI applications.
+Quickstart
+Read the
+Quickstart
+to write your first API call using Amazon Bedrock in under five minutes.
+Responses API
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="openai.gpt-oss-120b",
+    input="Can you explain the features of Amazon Bedrock?"
+    )
+print(response)
+Chat Completions API
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.chat.completions.create(
+    model="openai.gpt-oss-120b",
+    messages=[
+{
+"role": "user", "content": "Can you explain the features of Amazon Bedrock?"}]
+    )
+print(response)
+Invoke API
+import json
+import boto3
+
+client = boto3.client('bedrock-runtime', region_name='us-east-1')
+response = client.invoke_model(
+    modelId='anthropic.claude-opus-4-6-v1',
+    body=json.dumps(
+{
+'anthropic_version': 'bedrock-2023-05-31',
+            'messages': [
+{
+'role': 'user', 'content': 'Can you explain the features of Amazon Bedrock?'}],
+            'max_tokens': 1024
+    })
+ )
+ print(json.loads(response['body'].read()))
+Converse API
+import boto3
+
+client = boto3.client('bedrock-runtime', region_name='us-east-1')
+response = client.converse(
+    modelId='anthropic.claude-opus-4-6-v1',
+    messages=[
+{
+'role': 'user',
+            'content': [
+{
+'text': 'Can you explain the features of Amazon Bedrock?'}]
+        }
+    ]
+)
+print(response)
+Supported models
+Bedrock supports
+100+ foundation models
+from industry-leading providers, including Amazon, Anthropic, DeepSeek, Moonshot AI, MiniMax, and OpenAI.
+Nova 2
+Claude Opus 4.6
+Deepseek 3.2
+Kimi K2.5
+MiniMax M2.1
+GPT-OSS-20B
+What's new?
+Claude Opus 4.7 now available in Amazon Bedrock
+: Anthropic's most capable Opus model to date, delivering improvements across agentic coding, professional work, and long-running tasks.
+Claude Mythos Preview (Gated Research Preview)
+: Anthropic's most advanced AI model with state-of-the-art capabilities across cybersecurity, software coding, and complex reasoning tasks. Available in gated preview in US East (N. Virginia).
+Cost allocation by IAM user and role
+: Amazon Bedrock now supports cost allocation by IAM principal in AWS Cost and Usage Report 2.0 and Cost Explorer, enabling customers to attribute model inference costs across users, teams, and projects.
+Anthropic's Claude 4.6 now available on Amazon Bedrock
+:
+Claude Sonnet 4.6
+and
+Claude Opus 4.6
+are now available on Amazon Bedrock.
+Start Building
+Explore the
+APIs supported by Amazon Bedrock
+and
+Endpoints supported by Amazon Bedrock
+supported by Amazon Bedrock.
+Build using the
+Submit prompts and generate responses with model inference
+operations provided by Amazon Bedrock.
+Customize your models to improve performance and quality.
+Customize your model to improve its performance for your use case
+Javascript is disabled or is unavailable in your browser.
+To use the Amazon Web Services Documentation, Javascript must be enabled. Please refer to your browser's Help pages for instructions.
+Document Conventions
+Quickstart
+Did this page help you? - Yes
+Thanks for letting us know we're doing a good job!
+If you've got a moment, please tell us what we did right so we can do more of it.
+Did this page help you? - No
+Thanks for letting us know this page needs work. We're sorry we let you down.
+If you've got a moment, please tell us how we can make the documentation better.

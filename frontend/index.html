@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AWS RAG Chatbot</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; height: 100vh; display: flex; flex-direction: column; }
@@ -17,10 +18,28 @@
     .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
     .avatar.bot { background: #232f3e; color: #ff9900; }
     .avatar.user { background: #ff9900; color: #232f3e; }
-    .bubble { max-width: 70%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.6; }
+    .bubble { max-width: 70%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.7; }
     .bubble.bot { background: white; color: #1a1a1a; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     .bubble.user { background: #232f3e; color: white; border-bottom-right-radius: 4px; }
     .bubble.typing { color: #888; font-style: italic; }
+    .bubble.error { color: #d32f2f; font-style: italic; }
+
+    /* Markdown styles inside bot bubble */
+    .bubble.bot h1, .bubble.bot h2, .bubble.bot h3 { margin: 12px 0 6px; color: #1F4E79; font-size: 15px; }
+    .bubble.bot h1 { font-size: 17px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+    .bubble.bot p { margin: 6px 0; }
+    .bubble.bot ul, .bubble.bot ol { margin: 6px 0 6px 20px; }
+    .bubble.bot li { margin: 4px 0; }
+    .bubble.bot strong { color: #232f3e; }
+    .bubble.bot code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 13px; color: #C7254E; }
+    .bubble.bot pre { background: #2b2b2b; color: #f8f8f2; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; }
+    .bubble.bot pre code { background: none; color: #f8f8f2; padding: 0; }
+    .bubble.bot blockquote { border-left: 3px solid #ff9900; padding-left: 10px; color: #666; margin: 6px 0; }
+    .bubble.bot table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+    .bubble.bot th, .bubble.bot td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; font-size: 13px; }
+    .bubble.bot th { background: #f4f4f4; font-weight: 600; }
+    .bubble.bot hr { border: none; border-top: 1px solid #eee; margin: 10px 0; }
+
     .welcome { text-align: center; padding: 40px 20px; color: #666; }
     .welcome h2 { font-size: 22px; color: #232f3e; margin-bottom: 8px; }
     .welcome p { font-size: 14px; margin-bottom: 20px; }
@@ -29,7 +48,7 @@
     .suggestion:hover { background: #232f3e; color: white; border-color: #232f3e; }
     .input-area { background: white; border-top: 1px solid #e0e0e0; padding: 16px 24px; }
     .input-wrapper { max-width: 800px; margin: 0 auto; display: flex; gap: 12px; align-items: center; }
-    .session-info { font-size: 11px; color: #888; text-align: center; margin-bottom: 8px; max-width: 800px; margin: 0 auto 8px; }
+    .session-info { font-size: 11px; color: #888; text-align: center; max-width: 800px; margin: 0 auto 8px; }
     input[type="text"] { flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 24px; font-size: 14px; outline: none; transition: border 0.2s; }
     input[type="text"]:focus { border-color: #232f3e; }
     button.send { background: #232f3e; color: white; border: none; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; flex-shrink: 0; }
@@ -37,7 +56,6 @@
     button.send:disabled { background: #ccc; cursor: not-allowed; }
     button.new-chat { background: none; border: 1px solid #ddd; border-radius: 20px; padding: 6px 14px; font-size: 12px; cursor: pointer; color: #666; margin-left: 8px; }
     button.new-chat:hover { border-color: #232f3e; color: #232f3e; }
-    .error { color: #d32f2f; font-style: italic; }
   </style>
 </head>
 <body>
@@ -45,7 +63,7 @@
     <div class="header-logo">AWS</div>
     <div>
       <h1>RAG Chatbot</h1>
-      <p>Powered by Claude Sonnet 4 + Amazon Bedrock</p>
+      <p>Powered by Claude Haiku + Amazon Bedrock</p>
     </div>
   </div>
 
@@ -83,6 +101,8 @@
     let sessionId = generateSessionId();
     let isLoading = false;
 
+    marked.setOptions({ breaks: true, gfm: true });
+
     document.getElementById('session-info').textContent = `Session: ${sessionId}`;
 
     function generateSessionId() {
@@ -98,20 +118,32 @@
       sendMessage();
     }
 
-    function addMessage(text, role, isError) {
+    function addMessage(text, role, isMarkdown = false) {
       const welcome = document.getElementById('welcome');
       if (welcome) welcome.remove();
 
       const chat = document.getElementById('chat');
       const div = document.createElement('div');
       div.className = `message ${role}`;
-      div.innerHTML = `
-        <div class="avatar ${role === 'user' ? 'user' : 'bot'}">${role === 'user' ? 'You' : 'AI'}</div>
-        <div class="bubble ${role === 'user' ? 'user' : 'bot'} ${isError ? 'error' : ''}">${text}</div>
-      `;
+
+      const bubble = document.createElement('div');
+      bubble.className = `bubble ${role === 'user' ? 'user' : 'bot'}`;
+
+      if (isMarkdown && role === 'bot') {
+        bubble.innerHTML = marked.parse(text);
+      } else {
+        bubble.textContent = text;
+      }
+
+      const avatar = document.createElement('div');
+      avatar.className = `avatar ${role === 'user' ? 'user' : 'bot'}`;
+      avatar.textContent = role === 'user' ? 'You' : 'AI';
+
+      div.appendChild(avatar);
+      div.appendChild(bubble);
       chat.appendChild(div);
       chat.scrollTop = chat.scrollHeight;
-      return div;
+      return { div, bubble };
     }
 
     async function sendMessage() {
@@ -124,8 +156,8 @@
       document.getElementById('send-btn').disabled = true;
 
       addMessage(question, 'user');
-      const typingDiv = addMessage('Thinking...', 'bot');
-      typingDiv.querySelector('.bubble').classList.add('typing');
+      const { bubble: typingBubble } = addMessage('Thinking...', 'bot');
+      typingBubble.classList.add('typing');
 
       try {
         const response = await fetch(API_URL, {
@@ -135,14 +167,20 @@
         });
 
         const data = await response.json();
-        typingDiv.querySelector('.bubble').textContent = data.answer || data.error;
-        typingDiv.querySelector('.bubble').classList.remove('typing');
-        if (data.error) typingDiv.querySelector('.bubble').classList.add('error');
+
+        if (data.answer) {
+          typingBubble.innerHTML = marked.parse(data.answer);
+          typingBubble.classList.remove('typing');
+        } else {
+          typingBubble.textContent = data.error || 'Something went wrong.';
+          typingBubble.classList.remove('typing');
+          typingBubble.classList.add('error');
+        }
 
       } catch (err) {
-        typingDiv.querySelector('.bubble').textContent = 'Connection error. Please try again.';
-        typingDiv.querySelector('.bubble').classList.add('error');
-        typingDiv.querySelector('.bubble').classList.remove('typing');
+        typingBubble.textContent = 'Connection error. Please try again.';
+        typingBubble.classList.remove('typing');
+        typingBubble.classList.add('error');
       }
 
       isLoading = false;
